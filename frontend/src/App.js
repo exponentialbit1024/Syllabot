@@ -7,9 +7,21 @@ import SYSearch from './Components/SYSearch'
 
 
 class App extends Component {
+
+  logout() {
+      this.props.auth.logout();
+  }
+
   render() {
     return (
       <div className="App" >
+      <button
+        className="logout_button"
+        onClick={this.logout.bind(this)}
+      >
+        Log Out
+      </button>
+      <div className="bot">
       <ChatBot
     steps={[
       {
@@ -30,6 +42,7 @@ class App extends Component {
       },
     ]}
   />
+  </div>
 </div>
     );
   }
