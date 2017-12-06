@@ -1,6 +1,6 @@
 import tensorflow as tf
 import numpy as np
-from dbOb import dbOb
+from dbObL import dbOb
 import pickle
 import sys
 from nltk.tokenize import sent_tokenize, word_tokenize
@@ -25,7 +25,7 @@ def get_mysql_data():
     tcursor.execute(fetchQry, [])
     allFetch = tcursor.fetchall()
     allSents = [x[0] for x in allFetch]
-    print(allSents)
+    # print(allSents)
     return allSents
 
 def tokenization_cleaning(allSents):
@@ -56,8 +56,8 @@ def knn_run(vectors, subject):
     return indices
 
 def join_bigrams(stop_remove):
-    target_bigram_list = [('cs', '252'), ('email', 'id')]
-    replace_bigram_list = ['cs_252', 'email_id']
+    target_bigram_list = [('cs', '252'), ('email', 'id'), ('final', 'exam'), ('midterm', 'exam')]
+    replace_bigram_list = ['cs_252', 'email_id', 'final_exam', 'midterm_exam']
     new_stop_remove = []
     for sent in stop_remove:
         new_sent = []
@@ -83,11 +83,12 @@ def attach_important_stops(punct_remove, stop_remove, wv, wordidx):
             punct_map = set(punct_remove[idx])
             hit_stop = list(set(punct_map).intersection(question_stops))
             if len(hit_stop) > 0:
-                indices = knn_run(wv, wv[wordidx.index(hit_stop[0])])
-                for index in indices[0][1:]:
-                    if wordidx[index] not in question_stops:
-                        sent.insert(0, wordidx[index])
-                        break
+                for hs in hit_stop:
+                    indices = knn_run(wv, wv[wordidx.index(hs)])
+                    for index in indices[0][1:]:
+                        if wordidx[index] not in question_stops:
+                            sent.insert(0, wordidx[index])
+                            break
             else:
                 new_final_tokens.append(sent)
         new_final_tokens.append(sent)
@@ -175,6 +176,9 @@ def plot_vectors(wvs, wordidx):
     	pyplot.annotate(word, xy=(result[i, 0], result[i, 1]))
     pyplot.show()
 
+def save_vocab(wordidx):
+    np.save("./data/vocab", wordidx)
+
 def main():
     buildFlag = None
     mysqlPullFlag = False
@@ -183,6 +187,8 @@ def main():
         if "--data-pull=true" in sys.argv:
             mysqlPullFlag = True
     X, y, wordidx = build_data()
+    save_vocab(wordidx)
+    # print(np.load("./data/vocab.npy"))
     word_vec_file = "wv.pkl"
     wvs = None
     if buildFlag == '-n' or buildFlag is None:
