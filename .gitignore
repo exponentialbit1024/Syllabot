@@ -1,2 +1,3 @@
 *.pyc
 *.pkl
+backend/app/config.py
