@@ -4,7 +4,7 @@ time class
 time midterm
 email_id course
 late submission policy
-much final exam worth
+final_exam much worth
 attendance mandatory
 date midterm
 time class
@@ -20,11 +20,14 @@ much clicker points account grade
 date class
 time need go class
 contact professor
-time final exam
+final_exam time
 much midterm worth
-much final exam worth
-date place classes
-final exam
-date place midterm
+final_exam much worth
+place date classes
+place date final_exam
+place date midterm
 place final
 place midterm
+hello
+hello
+date class

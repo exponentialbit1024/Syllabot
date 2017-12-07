@@ -1,7 +1,7 @@
 where,location,place
 place,where
 when,where,what
-class,time,day,days,location,course
+class,time,day,days,location,course,cs_252,classes
 day,days
 time,location
 midterm,time,location,exam
@@ -12,13 +12,14 @@ time,when
 time,date
 location,where
 exam,midterm,final,exams,mid-term,final_exam,midterm_exam
-class,course,coursework,work
-final,exam,score,points
-late,policy
+class,course,coursework,work,cs_252
+final,exam,score,points,percentage,weightage,weight
+exam,score,points,percentage,weightage,weight
+late,policy,submission
 info,email,email_id,contact,TA,teaching,help,professor
 TA,professor
 help,session
-lab,session,deadline
+lab,session,deadline,submission
 project,homework,deadline
 points,score,worth,grade,marks
 first,1st
@@ -29,5 +30,7 @@ fifth,5th
 sixth,6th
 first,second,third,fourth,fifth,sixth
 1st,2nd,3rd,4th,5th,6th
+1,2,3,4,5,6
+one,two,three,four,five,six
 clicker,iclicker,i-clicker
 iclicker,points
