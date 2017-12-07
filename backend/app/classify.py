@@ -155,6 +155,9 @@ def create_lstm_sequence(vocab_map, sentences, cluster, maxLen=5):
                 print(word, "not in vocab")
         while len(sequence) != maxLen:
             sequence.insert(0, 0)
+        print("sent", sent)
+        print("seq", sequence)
+        # if input("save") == 'y':
         save_sequence(sequence, cluster, sentences.index(sent))
 
 def build_model():
@@ -241,30 +244,43 @@ def main():
     vocab = np.load("./data/vocab.npy")
 
     vocab_map = create_vocab_dict(list(vocab))
+    print(vocab_map)
 
     if "--new-vecs=true" in sys.argv:
+        print("here")
+        with open("worddict.pkl", "wb") as f2:
+            pickle.dump(vocab_map, f2)
+
         cp_sents = load_cluster_sents("class_location")
+        print("cluster 1")
         create_lstm_sequence(vocab_map, cp_sents, 1)
 
         cdt_sents = load_cluster_sents("class_time")
+        print("cluster 2")
         create_lstm_sequence(vocab_map, cdt_sents, 2)
 
         ep_sents = load_cluster_sents("exam_location")
+        print("cluster 3")
         create_lstm_sequence(vocab_map, ep_sents, 3)
 
         edt_sents = load_cluster_sents("exam_time")
+        print("cluster 4")
         create_lstm_sequence(vocab_map, edt_sents, 4)
 
         cpdt_sents = load_cluster_sents("class_info")
+        print("cluster 5")
         create_lstm_sequence(vocab_map, cpdt_sents, 5)
 
         epdt_sents = load_cluster_sents("exam_info")
+        print("cluster 6")
         create_lstm_sequence(vocab_map, epdt_sents, 6)
 
         grading_sents = load_cluster_sents("grading")
+        print("cluster 7")
         create_lstm_sequence(vocab_map, grading_sents, 7)
 
         misc_sents = load_cluster_sents("misc")
+        print("cluster 8")
         create_lstm_sequence(vocab_map, misc_sents, 8)
 
     # cp_sents = load_cluster_sents("class_location")
@@ -285,6 +301,7 @@ def main():
     c6 = load_cluster_sequences(6)
     c7 = load_cluster_sequences(7)
     c8 = load_cluster_sequences(8)
+    print(c8)
 
     X = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8
     y = np.hstack((np.ones(len(c1)), 2 * np.ones(len(c2)), 3 * np.ones(len(c3)), 4 * np.ones(len(c4))))
@@ -304,6 +321,7 @@ def main():
         inputSent = input("Enter test string: ")
         bigram_transform = tranform_new_sample(inputSent, wvs, list(vocab))
         mappedInputSeq = map_new_sequence(bigram_transform, vocab_map)
+        print(mappedInputSeq)
         if mappedInputSeq != -1:
             pred_vec = model.predict(np.array(mappedInputSeq).reshape(1, 5))
             print([np.argmax(vector) for vector in pred_vec])
