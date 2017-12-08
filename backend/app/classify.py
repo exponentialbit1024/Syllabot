@@ -37,6 +37,20 @@ def save_sequence(sequence, cluster, index):
         np.save("./data/clusters/grading/" + str(index) + ".npy", sequence)
     elif cluster == 8:
         np.save("./data/clusters/misc/" + str(index) + ".npy", sequence)
+    elif cluster == 9:
+        np.save("./data/clusters/epm/" + str(index) + ".npy", sequence)
+    elif cluster == 10:
+        np.save("./data/clusters/cdtm/" + str(index) + ".npy", sequence)
+    elif cluster == 11:
+        np.save("./data/clusters/epdtm/" + str(index) + ".npy", sequence)
+    elif cluster == 12:
+        np.save("./data/clusters/epf/" + str(index) + ".npy", sequence)
+    elif cluster == 13:
+        np.save("./data/clusters/ecdtf/" + str(index) + ".npy", sequence)
+    elif cluster == 14:
+        np.save("./data/clusters/efi/" + str(index) + ".npy", sequence)
+    elif cluster == 15:
+        np.save("./data/clusters/coursei/" + str(index) + ".npy", sequence)
 
 def load_sequence(cluster, index):
     if cluster == 1:
@@ -62,6 +76,27 @@ def load_sequence(cluster, index):
         return seq
     elif cluster == 8:
         seq = np.load("./data/clusters/misc/" + str(index) + ".npy")
+        return seq
+    elif cluster == 9:
+        seq = np.load("./data/clusters/epm/" + str(index) + ".npy")
+        return seq
+    elif cluster == 10:
+        seq = np.load("./data/clusters/cdtm/" + str(index) + ".npy")
+        return seq
+    elif cluster == 11:
+        seq = np.load("./data/clusters/epdtm/" + str(index) + ".npy")
+        return seq
+    elif cluster == 12:
+        seq = np.load("./data/clusters/epf/" + str(index) + ".npy")
+        return seq
+    elif cluster == 13:
+        seq = np.load("./data/clusters/ecdtf/" + str(index) + ".npy")
+        return seq
+    elif cluster == 14:
+        seq = np.load("./data/clusters/efi/" + str(index) + ".npy")
+        return seq
+    elif cluster == 15:
+        seq = np.load("./data/clusters/coursei/" + str(index) + ".npy")
         return seq
 
 def generate_wvs_sequence(wvs, wordidx, sentences, maxLen, cluster):
@@ -120,6 +155,41 @@ def load_cluster_sequences(cluster):
             if filename.endswith(".npy"):
                 sequence_list.append(np.load("./data/clusters/misc/" + filename))
         return sequence_list
+    elif cluster == 9:
+        for filename in os.listdir("./data/clusters/epm/"):
+            if filename.endswith(".npy"):
+                sequence_list.append(np.load("./data/clusters/epm/" + filename))
+        return sequence_list
+    elif cluster == 10:
+        for filename in os.listdir("./data/clusters/cdtm/"):
+            if filename.endswith(".npy"):
+                sequence_list.append(np.load("./data/clusters/cdtm/" + filename))
+        return sequence_list
+    elif cluster == 11:
+        for filename in os.listdir("./data/clusters/epdtm/"):
+            if filename.endswith(".npy"):
+                sequence_list.append(np.load("./data/clusters/epdtm/" + filename))
+        return sequence_list
+    elif cluster == 12:
+        for filename in os.listdir("./data/clusters/epf/"):
+            if filename.endswith(".npy"):
+                sequence_list.append(np.load("./data/clusters/epf/" + filename))
+        return sequence_list
+    elif cluster == 13:
+        for filename in os.listdir("./data/clusters/ecdtf/"):
+            if filename.endswith(".npy"):
+                sequence_list.append(np.load("./data/clusters/ecdtf/" + filename))
+        return sequence_list
+    elif cluster == 14:
+        for filename in os.listdir("./data/clusters/efi/"):
+            if filename.endswith(".npy"):
+                sequence_list.append(np.load("./data/clusters/efi/" + filename))
+        return sequence_list
+    elif cluster == 15:
+        for filename in os.listdir("./data/clusters/coursei/"):
+            if filename.endswith(".npy"):
+                sequence_list.append(np.load("./data/clusters/coursei/" + filename))
+        return sequence_list
 
 def load_cluster_sents(clustername):
     cpf = open("./data/" + clustername)
@@ -163,9 +233,9 @@ def create_lstm_sequence(vocab_map, sentences, cluster, maxLen=5):
 def build_model():
     embedding_vecor_length = 3
     model = Sequential()
-    model.add(Embedding(76, embedding_vecor_length, input_length=5))
+    model.add(Embedding(80, embedding_vecor_length, input_length=5))
     model.add(LSTM(100))
-    model.add(Dense(9, activation='sigmoid'))
+    model.add(Dense(16, activation='sigmoid'))
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     return model
 
@@ -193,7 +263,7 @@ def tranform_new_sample(sentence, wv, wordidx):
     tokens = tokenizer.tokenize(sentence.lower())
     stop_remove = []
     for token in tokens:
-        if not token in stopwords.words('english'):
+        if not token in stopwords.words('english') or token == "about":
             stop_remove.append(token)
 
     target_bigram_list = [('cs', '252'), ('email', 'id'), ('final', 'exam'), ('midterm', 'exam')]
@@ -247,7 +317,6 @@ def main():
     print(vocab_map)
 
     if "--new-vecs=true" in sys.argv:
-        print("here")
         with open("worddict.pkl", "wb") as f2:
             pickle.dump(vocab_map, f2)
 
@@ -283,6 +352,33 @@ def main():
         print("cluster 8")
         create_lstm_sequence(vocab_map, misc_sents, 8)
 
+        epm_sents = load_cluster_sents("midterm_location")
+        print("cluster 9")
+        create_lstm_sequence(vocab_map, epm_sents, 9)
+
+        cdtm_sents = load_cluster_sents("midterm_time")
+        print("cluster 10")
+        create_lstm_sequence(vocab_map, cdtm_sents, 10)
+
+        epdtm_sents = load_cluster_sents("midterm_info")
+        print("cluster 11")
+        create_lstm_sequence(vocab_map, epdtm_sents, 11)
+
+        epf_sents = load_cluster_sents("final_location")
+        print("cluster 12")
+        create_lstm_sequence(vocab_map, epf_sents, 12)
+
+        ecdtf_sents = load_cluster_sents("final_time")
+        print("cluster 13")
+        create_lstm_sequence(vocab_map, ecdtf_sents, 13)
+
+        efi_sents = load_cluster_sents("final_info")
+        print("cluster 14")
+        create_lstm_sequence(vocab_map, efi_sents, 14)
+
+        coursei_sents = load_cluster_sents("course_info")
+        print("cluster 15")
+        create_lstm_sequence(vocab_map, coursei_sents, 15)
     # cp_sents = load_cluster_sents("class_location")
     # cdt_sents = load_cluster_sents("class_time")
     # ep_sents = load_cluster_sents("exam_location")
@@ -301,15 +397,25 @@ def main():
     c6 = load_cluster_sequences(6)
     c7 = load_cluster_sequences(7)
     c8 = load_cluster_sequences(8)
-    print(c8)
+    c9 = load_cluster_sequences(9)
+    c10 = load_cluster_sequences(10)
+    c11 = load_cluster_sequences(11)
+    c12 = load_cluster_sequences(12)
+    c13 = load_cluster_sequences(13)
+    c14 = load_cluster_sequences(14)
+    c15 = load_cluster_sequences(15)
 
-    X = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8
+    X = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9 + c10 + c11 + c12 + c13 + c14 + c15
     y = np.hstack((np.ones(len(c1)), 2 * np.ones(len(c2)), 3 * np.ones(len(c3)), 4 * np.ones(len(c4))))
     y = np.hstack((y, 5 * np.ones(len(c5)), 6 * np.ones(len(c6)), 7 * np.ones(len(c7)), 8 * np.ones(len(c8))))
+    y = np.hstack((y, 9 * np.ones(len(c9)), 10 * np.ones(len(c10)), 11 * np.ones(len(c11)), 12 * np.ones(len(c12))))
+    y = np.hstack((y, 13 * np.ones(len(c13)), 14 * np.ones(len(c14)), 15 * np.ones(len(c15))))
+    print(len(X))
+    print(len(y))
 
     if "-n" in sys.argv:
         model = build_model()
-        model.fit(np.array(X), to_categorical(y), epochs=300, batch_size=56)
+        model.fit(np.array(X), to_categorical(y), epochs=1000, batch_size=56)
         model.save("chatlstm.h5")
     elif "-o" in sys.argv:
         model = load_model('chatlstm.h5')
@@ -320,6 +426,7 @@ def main():
     while(True):
         inputSent = input("Enter test string: ")
         bigram_transform = tranform_new_sample(inputSent, wvs, list(vocab))
+        print(bigram_transform)
         mappedInputSeq = map_new_sequence(bigram_transform, vocab_map)
         print(mappedInputSeq)
         if mappedInputSeq != -1:

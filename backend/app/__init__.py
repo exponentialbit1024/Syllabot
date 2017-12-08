@@ -25,9 +25,9 @@ def predictChatOut():
         if inputText.lower() == "hi" or inputText.lower() == "hello":
             return jsonify({'result' : "True", 'response' : "Hello! I\'m Syllabot! You can ask me general questions about the course like, \"When is the final?\" "})
         clf = classifier()
-        # dbObj = dbOb()
-        # dconOb = dataCon(dbObj)
-        # saveSuc = dconOb.save_text(inputText)
+        dbObj = dbOb()
+        dconOb = dataCon(dbObj)
+        saveSuc = dconOb.save_text(inputText)
         prediction = clf.predict(inputText)
         return jsonify({'result' : True, 'response' : prediction})
 

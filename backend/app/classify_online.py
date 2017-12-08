@@ -36,6 +36,7 @@ RESPONSE_EMAIL = "The course email ID is grr@cs.purdue.edu"
 RESPONSE_PROF = "You can contact the professor at grr@cs.purdue.edu"
 RESPONSE_LATE = "10" + '%' + " of your grade for the project will be deducted for each late day, unless there is a hard deadline, which will result in a 0."
 RESPONSE_MAN_ATT = "The attendence is not mandatory, but there will be points for attendance which account for 10" + '%' + " of your final grade."
+REPONSE_CLASS_INFO = " Low-level programming; review of addresses, pointers, memory layout, and data representation; text, data, and bss segments; debugging and hex dumps; concurrent execution with threads and processes; address spaces; file names; descriptors and file pointers; inheritance; system calls and library functions; standard I/O and string libraries; simplified socket programming; building tools to help programmers; make and make files; shell scripts and quoting; unix tools including sed, echo, test, and find; scripting languages such as awk; version control; object and executable files (.o and a.out); symbol tables; pointers to functions; hierarchical directories; and DNS hierarchy; programming embedded systems."
 
 class classifier:
 
@@ -104,7 +105,7 @@ class classifier:
             seq.insert(0, 0)
         return seq
 
-    def map_response(self, prediction):
+    def map_response(self, prediction, bigram):
         if prediction == 1:
             return RESPONSE_CP
         elif prediction == 2:
@@ -119,13 +120,33 @@ class classifier:
             return RESPONSE_COMBC
         elif prediction == 6:
             #combo exam info
-            return RESPONSE_COMBEF
+            return RESPONSE_COMBEM + " and " + RESPONSE_COMBEF
         elif prediction == 7:
             #grading stuff
+            if "final" in bigram:
+                return RESPONSE_FINAL
+            elif "midterm" in bigram:
+                return RESPONSE_MIDTERM
             return RESPONSE_GRADING
         elif prediction == 8:
             #misc
+            if "attendance" in bigram:
+                return RESPONSE_ATTENDENCE
             return RESPONSE_EMAIL
+        elif prediction == 9:
+            return RESPONSE_EPM
+        elif prediction == 10:
+            return RESPONSE_EDTM
+        elif prediction == 11:
+            return RESPONSE_COMBEM
+        elif prediction == 12:
+            return RESPONSE_EPF
+        elif prediction == 13:
+            return RESPONSE_EDTF
+        elif prediction == 14:
+            return RESPONSE_COMBEF
+        elif prediction == 15:
+            return REPONSE_CLASS_INFO
 
     def predict(self, inputSent):
         bigram_transform = self.tranform_new_sample(inputSent, self.wv, list(self.vocab))
@@ -134,6 +155,6 @@ class classifier:
             pred_vec = self.model.predict(np.array(mappedInputSeq).reshape(1, 5))
             prediction = [np.argmax(vector) for vector in pred_vec]
             prediction_class = prediction[0]
-            prediction_response = self.map_response(prediction_class)
+            prediction_response = self.map_response(prediction_class, bigram_transform)
             return prediction_response
         return "Sorry I couldn\'t understand that"

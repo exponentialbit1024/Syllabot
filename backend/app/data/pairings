@@ -10,11 +10,11 @@ time,when,what
 time,when,date
 time,when
 time,date
-location,where
 exam,midterm,final,exams,mid-term,final_exam,midterm_exam
 class,course,coursework,work,cs_252
 final,exam,score,points,percentage,weightage,weight
 exam,score,points,percentage,weightage,weight
+location,where
 late,policy,submission
 info,email,email_id,contact,TA,teaching,help,professor
 TA,professor
@@ -34,3 +34,5 @@ first,second,third,fourth,fifth,sixth
 one,two,three,four,five,six
 clicker,iclicker,i-clicker
 iclicker,points
+teaching,taught
+information,about,description,info
