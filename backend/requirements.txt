@@ -19,4 +19,4 @@ scipy>=0.19
 tensorflow==1.4.0
 keras==2.0.6
 h5py==2.7.1
-nltk==3.2.4
+nltk==3.4.5
