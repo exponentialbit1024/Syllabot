@@ -16,7 +16,7 @@ gunicorn==19.3.0
 numpy==1.13.1
 scikit-learn>=0.18
 scipy>=0.19
-tensorflow==1.4.0
+tensorflow==2.5.3
 keras==2.0.6
 h5py==2.7.1
 nltk==3.2.4
